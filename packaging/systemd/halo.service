@@ -1,0 +1,13 @@
+[Unit]
+Description=Halo: ROG Xbox Ally ring lighting
+Documentation=https://github.com/kirebyte/halo
+
+[Service]
+Type=dbus
+BusName=org.halo.Halo1
+ExecStart=%h/.local/bin/halo daemon
+Restart=on-failure
+RestartSec=3
+
+[Install]
+WantedBy=default.target

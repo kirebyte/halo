@@ -1,0 +1,21 @@
+{
+  "effect.battery": "Battery",
+  "effect.breathing": "Breathing",
+  "effect.clock": "Clock",
+  "effect.clock12": "Clock (12 h)",
+  "effect.comet": "Comet",
+  "effect.cycle": "Cycle",
+  "effect.equalizer": "Equalizer",
+  "effect.pulse": "Pulse",
+  "effect.rainbow": "Rainbow",
+  "effect.sensors": "Sensors",
+  "effect.star": "Star",
+  "effect.starry": "Starry sky",
+  "effect.strobe": "Strobe",
+  "effect.sun": "Sun",
+  "effect.tide": "Tide",
+  "speed.fast": "fast",
+  "speed.medium": "medium",
+  "speed.slow": "slow",
+  "usage": "Usage: halo [--backend auto|lamparray|vendor|dummy] COMMAND\n\n  set COLOR | C1 C2 C3 C4       one color, or one per zone (left bottom, left top, right top, right bottom)\n  pick                          choose the color with the KDE color dialog (kdialog)\n  brightness 0-3                hardware brightness (0 turns the rings off whatever paints them)\n  restore                       send the last saved color and brightness again\n  release                       hand the rings back to the firmware\n  status                        what Halo found and how everything is\n  eq                            toggle the music equalizer; needs the daemon\n  effect [EFFECT] [SPEED]       start an effect at slow|medium|fast (`halo effect` lists them and\n                                shows the current one); `effect off` stops it\n  effect colors EFFECT C..|auto custom colors of an effect (breathing 1-2, tide 2, starry sky\n                                then stars, comet 1, pulse any number); `auto` restores the defaults\n  effect direction EFFECT normal|reverse\n                                run rainbow, cycle, comet and tide backwards\n  config [KEY VALUE]            show or change halo.conf: latitude, longitude (degrees or auto),\n                                screen_off yes|no, hardware_effects yes|no; applied at once with the daemon\n  games [on|off]                whether games may control the lights (Chroma, GameSense); with\n                                nothing, lists the connected and blocked games\n  games block|allow GAME        block or allow one game by name (as shown by `halo games`)\n  profile [APPID VALUE|remove]  per-game profile: when the Steam game opens, VALUE is shown (a color,\n                                one per zone, an effect or off) and the usual lights come back when\n                                it closes; with nothing, lists the profiles and the running game\n  proton [list]                 Steam games with a Proton prefix and whether they have the bridge\n  proton install APPID|--all    put Halo's Chroma/GameSense/Logitech bridge in the game's prefix\n  proton remove APPID|--all     remove it (only Halo's files; never Razer's)\n  proton scan [APPID]           look for lighting SDKs inside the installed games\n  daemon                        run the daemon (halo.service starts it)\n  layer NAME PRIO C1..C4        a layer above the base color (\"\" = transparent); needs the daemon\n  unlayer NAME                  remove a layer\n\nCOLOR = RRGGBB | #RRGGBB | red orange yellow green cyan blue purple magenta pink white off\nWith an explicit --backend, commands go straight to the hardware even if the daemon is running."
+}

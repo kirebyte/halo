@@ -1,0 +1,5 @@
+/target
+__pycache__/
+/shims/chroma/build
+/shims/logitech/build
+.qmlls.ini

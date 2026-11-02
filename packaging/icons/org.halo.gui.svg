@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Halo: the two rings of the ROG Xbox Ally, each with its two halves. -->
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+  <rect width="64" height="64" rx="14" fill="#1b1e24"/>
+  <g fill="none" stroke-width="7" stroke-linecap="butt">
+    <!-- anillo izquierdo: arriba y abajo -->
+    <path d="M 8 32 A 11 11 0 0 1 30 32" stroke="#4fc3f7"/>
+    <path d="M 30 32 A 11 11 0 0 1 8 32" stroke="#ab47bc"/>
+    <!-- anillo derecho -->
+    <path d="M 34 32 A 11 11 0 0 1 56 32" stroke="#ffca28"/>
+    <path d="M 56 32 A 11 11 0 0 1 34 32" stroke="#66bb6a"/>
+  </g>
+</svg>

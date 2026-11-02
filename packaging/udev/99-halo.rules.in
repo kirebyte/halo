@@ -1,0 +1,12 @@
+# Halo: access to the ROG Xbox Ally vendor channel (USB interface 02) for @USER@.
+# Only needed for hardware brightness (5A BA C5 C4) and the vendor backend; LampArray does not need it.
+# InputPlumber hides this hidraw (chmod 000 + setfacl -b in its rules 50 and 96), so MODE and
+# uaccess are no use: this RUN executes after those. Two steps because idVendor and
+# bInterfaceNumber live on different parent devices.
+ACTION!="add|change", GOTO="halo_end"
+SUBSYSTEM!="hidraw", GOTO="halo_end"
+ATTRS{idVendor}=="0b05", ATTRS{idProduct}=="1b4c", GOTO="halo_device"
+GOTO="halo_end"
+LABEL="halo_device"
+ATTRS{bInterfaceNumber}=="02", RUN+="/usr/bin/setfacl -m u:@USER@:rw /dev/%k"
+LABEL="halo_end"

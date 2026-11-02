@@ -1,0 +1,14 @@
+[Desktop Entry]
+Type=Application
+Name=RGB equalizer
+Name[es]=Ecualizador RGB
+Name[fr]=Égaliseur RGB
+Name[ja]=RGB イコライザー
+Comment=Toggle the rings following the music
+Comment[es]=Prende o apaga los anillos al ritmo de la música
+Comment[fr]=Allume et éteint les anneaux au rythme de la musique
+Comment[ja]=音楽に合わせてリングを点滅させる
+Exec=@BIN@/halo eq
+Icon=audio-volume-high
+Categories=AudioVideo;Audio;
+Terminal=false

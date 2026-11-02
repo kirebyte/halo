@@ -1,0 +1,23 @@
+// The "Halo: Logitech LED bridge" marker is what `halo proton remove` checks before deleting.
+1 VERSIONINFO
+FILEVERSION 9,0,0,99
+PRODUCTVERSION 9,0,0,99
+FILEOS 0x40004
+FILETYPE 0x2
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904B0"
+        BEGIN
+            VALUE "FileDescription", "Halo: Logitech LED bridge for Wine/Proton"
+            VALUE "FileVersion", "9.0.0.99"
+            VALUE "ProductName", "Halo"
+            VALUE "ProductVersion", "9.0.0.99"
+            VALUE "OriginalFilename", "LogitechLed.dll"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END

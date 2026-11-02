@@ -1,0 +1,23 @@
+// Razer's sample library rejects an RzChromatic*.dll whose FileVersion is below 1.0.0.36.
+1 VERSIONINFO
+FILEVERSION 1,0,0,99
+PRODUCTVERSION 1,0,0,99
+FILEOS 0x40004
+FILETYPE 0x2
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904B0"
+        BEGIN
+            VALUE "FileDescription", "Halo: Razer Chroma bridge for Wine/Proton"
+            VALUE "FileVersion", "1.0.0.99"
+            VALUE "ProductName", "Halo"
+            VALUE "ProductVersion", "1.0.0.99"
+            VALUE "OriginalFilename", "RzChromaSDK.dll"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END

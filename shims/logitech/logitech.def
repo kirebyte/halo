@@ -1,0 +1,34 @@
+EXPORTS
+    LogiLedInit
+    LogiLedInitWithName
+    LogiLedGetSdkVersion
+    LogiGetConfigOptionNumber
+    LogiGetConfigOptionBool
+    LogiGetConfigOptionColor
+    LogiGetConfigOptionRect
+    LogiGetConfigOptionKeyInput
+    LogiGetConfigOptionSelect
+    LogiGetConfigOptionRange
+    LogiSetConfigOptionLabel
+    LogiLedSetTargetDevice
+    LogiLedSaveCurrentLighting
+    LogiLedRestoreLighting
+    LogiLedStopEffects
+    LogiLedSetLighting
+    LogiLedFlashLighting
+    LogiLedPulseLighting
+    LogiLedSetLightingFromBitmap
+    LogiLedSetLightingForKeyWithScanCode
+    LogiLedSetLightingForKeyWithHidCode
+    LogiLedSetLightingForKeyWithQuartzCode
+    LogiLedSetLightingForKeyWithKeyName
+    LogiLedSetLightingForTargetZone
+    LogiLedSaveLightingForKey
+    LogiLedRestoreLightingForKey
+    LogiLedExcludeKeysFromBitmap
+    LogiLedFlashSingleKey
+    LogiLedPulseSingleKey
+    LogiLedStopEffectsOnKey
+    LogiLedShutdown
+    DllRegisterServer PRIVATE
+    DllUnregisterServer PRIVATE

@@ -1,0 +1,23 @@
+[Desktop Entry]
+Type=Application
+Name=Halo
+Name[es]=Halo
+Name[fr]=Halo
+Name[ja]=Halo
+GenericName=ROG Xbox Ally lighting
+GenericName[es]=Luces del ROG Xbox Ally
+GenericName[fr]=Éclairage du ROG Xbox Ally
+GenericName[ja]=ROG Xbox Ally のライティング
+Comment=Color, effects and game permissions for the Xbox Ally rings
+Comment[es]=Color, efectos y permisos de juego para los anillos del Xbox Ally
+Comment[fr]=Couleur, effets et permissions des jeux pour les anneaux de la Xbox Ally
+Comment[ja]=Xbox Ally のリングの色、エフェクト、ゲームの許可設定
+Exec=@BIN@/halo-gui
+Icon=org.halo.gui
+Terminal=false
+Categories=Settings;HardwareSettings;Qt;KDE;
+Keywords=rgb;led;rings;lights;ally;
+Keywords[es]=rgb;led;anillos;luces;ally;
+Keywords[fr]=rgb;led;anneaux;lumières;ally;
+Keywords[ja]=rgb;led;リング;ライト;ally;
+StartupNotify=true

@@ -1,0 +1,14 @@
+[Desktop Entry]
+Type=Application
+Name=Ring color
+Name[es]=Color de los anillos
+Name[fr]=Couleur des anneaux
+Name[ja]=リングの色
+Comment=Choose the color of the Ally's RGB rings
+Comment[es]=Elige el color de los anillos RGB del Ally
+Comment[fr]=Choisir la couleur des anneaux RGB de l'Ally
+Comment[ja]=Ally の RGB リングの色を選ぶ
+Exec=@BIN@/halo pick
+Icon=preferences-desktop-color
+Categories=Settings;HardwareSettings;
+Terminal=false
