@@ -1,0 +1,11 @@
+{
+  "name": "Halo",
+  "author": "Kira",
+  "flags": [],
+  "api_version": 1,
+  "publish": {
+    "tags": ["lighting", "rgb", "rog-ally", "utility"],
+    "description": "Lighting for the ROG Xbox Ally joystick rings from the quick access menu: color, effects, brightness and whether games may paint them. Needs Halo's daemon (https://github.com/kirebyte/halo).",
+    "image": "https://raw.githubusercontent.com/kirebyte/halo/main/packaging/icons/org.halo.gui.svg"
+  }
+}

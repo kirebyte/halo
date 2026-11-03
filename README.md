@@ -21,6 +21,8 @@ Bazzite/SteamOS; no root needed for the essentials.
   **window** ([docs/gui.md](docs/gui.md)), in English, Spanish, French and Japanese. The window
   also works with the gamepad and the touchscreen, in game mode too. The color comes back after
   suspend.
+- A **Decky plugin** ([docs/decky.md](docs/decky.md)): the essentials from the quick access menu
+  in game mode, without leaving the game.
 
 With nothing animated the daemon uses no CPU: it only wakes on events (and reads the screen state
 once per second, if that option is on).
@@ -42,7 +44,8 @@ git clone https://github.com/kirebyte/halo && cd halo
 ```
 This leaves `~/.local/bin/halo`, the user service `halo.service`, the window in the menu and the
 launchers. At the end it prints the one root step (the udev rule) to run by hand.
-`./uninstall.sh` removes everything.
+`./uninstall.sh` removes everything. The Decky plugin is built apart, with node:
+`decky/build.sh` ([docs/decky.md](docs/decky.md)).
 
 ## Quick use
 ```bash
