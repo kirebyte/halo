@@ -6,6 +6,7 @@ import org.kde.kirigamiaddons.formcard as FormCard
 import org.halo.gui
 
 Kirigami.ScrollablePage {
+    Keys.onPressed: event => applicationWindow().handleKey(event)
     title: Halo.tr("Settings")
 
     readonly property var config: {

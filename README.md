@@ -18,8 +18,9 @@ Bazzite/SteamOS; no root needed for the essentials.
 - **Per-game profiles** ([docs/profiles.md](docs/profiles.md)): when a Steam game opens, its color
   or effect; when it closes, the usual lights. No polling: inotify + pidfd.
 - **CLI** (`halo`), a user **daemon** with a D-Bus interface (`org.halo.Halo1`) and a Qt/Kirigami
-  **window** ([docs/gui.md](docs/gui.md)), in English, Spanish, French and Japanese. The color
-  comes back after suspend.
+  **window** ([docs/gui.md](docs/gui.md)), in English, Spanish, French and Japanese. The window
+  also works with the gamepad and the touchscreen, in game mode too. The color comes back after
+  suspend.
 
 With nothing animated the daemon uses no CPU: it only wakes on events (and reads the screen state
 once per second, if that option is on).

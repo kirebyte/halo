@@ -189,6 +189,7 @@ impl Halo {
         }
         self.core.lock().await.set_brightness(level).map_err(io)?;
         self.brightness_changed(&em).await?;
+        self.frame_changed(&em).await?;
         Ok(())
     }
 

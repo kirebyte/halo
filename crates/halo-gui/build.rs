@@ -5,10 +5,12 @@ fn main() {
         QmlModule::new("org.halo.gui")
             .qml_file("qml/Main.qml")
             .qml_file("qml/Rings.qml")
+            .qml_file("qml/ColorPicker.qml")
             .qml_file("qml/LightsPage.qml")
             .qml_file("qml/GamesPage.qml")
             .qml_file("qml/SettingsPage.qml"),
     )
     .files(["src/halo.rs"])
+    .cpp_file("src/keys.cpp")
     .build();
 }

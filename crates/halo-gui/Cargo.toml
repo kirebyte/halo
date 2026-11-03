@@ -9,6 +9,7 @@ repository.workspace = true
 # Needs Qt 6 and Kirigami: not part of the workspace `cargo build` (see default-members).
 [dependencies]
 halo-core = { path = "../halo-core" }
+libc.workspace = true
 cxx = "1.0.95"
 cxx-qt = "0.10"
 cxx-qt-lib = { version = "0.10", features = ["qt_full"] }

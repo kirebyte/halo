@@ -32,12 +32,15 @@ pub struct Compositor {
     /// The screen is off: everything comes out off, games included. Layers are kept and come
     /// back as they were when it turns on.
     pub blank: bool,
+    /// Hardware brightness 0 ("Rings off"): the same blackout, until the brightness comes back.
+    /// Painted in software as well, so it does not depend on the MCU honouring the vendor command.
+    pub dark: bool,
     layers: BTreeMap<String, Layer>,
 }
 
 impl Compositor {
     pub fn new(base: Frame) -> Self {
-        Self { base, games_enabled: true, blocked: BTreeSet::new(), blank: false, layers: BTreeMap::new() }
+        Self { base, games_enabled: true, blocked: BTreeSet::new(), blank: false, dark: false, layers: BTreeMap::new() }
     }
 
     pub fn set_layer(&mut self, name: &str, layer: Layer) {
@@ -75,11 +78,16 @@ impl Compositor {
     /// Something must be painted by software above the ambient effect: screen off, games or
     /// external tools. Otherwise the MCU can animate on its own.
     pub fn needs_software(&self) -> bool {
-        self.blank || self.layers.iter().any(|(n, l)| l.priority > PRIORITY_AMBIENT && self.visible(n, l))
+        self.off() || self.layers.iter().any(|(n, l)| l.priority > PRIORITY_AMBIENT && self.visible(n, l))
+    }
+
+    /// Everything off: the screen is off or the brightness is 0.
+    pub fn off(&self) -> bool {
+        self.blank || self.dark
     }
 
     pub fn output(&self) -> Frame {
-        if self.blank {
+        if self.off() {
             return [Rgb::OFF; ZONES];
         }
         let mut layers: Vec<&Layer> = self.layers.iter().filter(|(n, l)| self.visible(n, l)).map(|(_, l)| l).collect();
@@ -181,5 +189,16 @@ mod tests {
         assert_eq!(c.output(), [Rgb::OFF; ZONES]);
         c.blank = false;
         assert_eq!(c.output(), [G, R, R, R]);
+    }
+
+    #[test]
+    fn brightness_zero_turns_everything_off_and_back() {
+        let mut c = Compositor::new([R; ZONES]);
+        c.set_layer("chroma:game", Layer { priority: PRIORITY_GAME, zones: [Some(G); ZONES] });
+        c.dark = true;
+        assert!(c.needs_software());
+        assert_eq!(c.output(), [Rgb::OFF; ZONES]);
+        c.dark = false;
+        assert_eq!(c.output(), [G; ZONES]);
     }
 }

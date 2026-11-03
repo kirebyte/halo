@@ -1,9 +1,11 @@
 import QtQuick
+import QtQuick.Controls as QQC2
 import QtQuick.Shapes
 import org.kde.kirigami as Kirigami
 
 // The two rings, with their four halves in the colors the daemon reports.
 // Zones: 0 left bottom, 1 left top, 2 right top, 3 right bottom.
+// Each half is a button: tap it, or reach it with Tab and press Space (a gamepad's A).
 Item {
     id: rings
     // "rrggbb" per zone.
@@ -57,10 +59,11 @@ Item {
                                     sweepAngle: 180
                                 }
                             }
-                            // A faint outline so the half is visible even when off.
+                            // A faint outline so the half is visible even when off; the focus
+                            // highlight when the half is reached with the keyboard or a gamepad.
                             ShapePath {
-                                strokeWidth: 1
-                                strokeColor: Kirigami.Theme.disabledTextColor
+                                strokeWidth: button.visualFocus ? 3 : 1
+                                strokeColor: button.visualFocus ? Kirigami.Theme.highlightColor : Kirigami.Theme.disabledTextColor
                                 fillColor: "transparent"
                                 PathAngleArc {
                                     centerX: ring.width / 2
@@ -72,15 +75,19 @@ Item {
                                 }
                             }
                         }
-                    }
-                }
 
-                // One area per ring: the half is decided by where it was tapped.
-                MouseArea {
-                    anchors.fill: parent
-                    onClicked: mouse => {
-                        const isTop = mouse.y < height / 2;
-                        rings.zoneTapped(ring.modelData === 0 ? (isTop ? 1 : 0) : (isTop ? 2 : 3));
+                        // The half's own strip, so the two halves do not overlap and both get
+                        // their taps (one area per ring deciding by y was the previous way).
+                        QQC2.AbstractButton {
+                            id: button
+                            x: 0
+                            y: half.isTop ? 0 : half.height / 2
+                            width: half.width
+                            height: half.height / 2
+                            focusPolicy: Qt.StrongFocus
+                            Accessible.name: "zone " + half.zone
+                            onClicked: rings.zoneTapped(half.zone)
+                        }
                     }
                 }
             }

@@ -27,6 +27,7 @@ impl Core {
         let config = config::load();
         comp.games_enabled = config.games;
         comp.blocked = config.blocked.iter().map(|g| g.to_lowercase()).collect();
+        comp.dark = initial.brightness == 0;
         Self {
             comp,
             config,
@@ -134,13 +135,16 @@ impl Core {
         self.dev.as_mut().expect("just opened").apply(frame)
     }
 
-    pub fn set_brightness(&mut self, level: u8) -> io::Result<()> {
+    /// Hardware brightness 0-3. At 0 the rings are also painted off, whatever games or effects
+    /// want, so "Rings off" holds even where the MCU ignores the vendor brightness command.
+    pub fn set_brightness(&mut self, level: u8) -> io::Result<Frame> {
         self.brightness = level;
+        self.comp.dark = level == 0;
         if let Some(d) = self.dev.as_mut() {
             d.set_brightness(level)?;
         }
         self.save();
-        Ok(())
+        self.push()
     }
 
     pub fn set_base(&mut self, frame: Frame) -> io::Result<Frame> {

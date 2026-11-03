@@ -6,6 +6,7 @@ import org.kde.kirigamiaddons.formcard as FormCard
 import org.halo.gui
 
 Kirigami.ScrollablePage {
+    Keys.onPressed: event => applicationWindow().handleKey(event)
     title: Halo.tr("Games")
 
     readonly property var games: {
@@ -77,6 +78,9 @@ Kirigami.ScrollablePage {
                     : (currentProfile ? Halo.tr("When it opens:") + " " + describe(currentProfile.value) : Halo.tr("No profile: the usual lights stay"))
             }
             FormCard.FormComboBoxDelegate {
+                displayMode: FormCard.FormComboBoxDelegate.ComboBox // popup list: a gamepad can drive it
+                Keys.onLeftPressed: decrementCurrentIndex()
+                Keys.onRightPressed: incrementCurrentIndex()
                 id: currentChoice
                 visible: currentGame.appid !== ""
                 text: Halo.tr("When it opens")
@@ -119,12 +123,18 @@ Kirigami.ScrollablePage {
                 }
             }
             FormCard.FormComboBoxDelegate {
+                displayMode: FormCard.FormComboBoxDelegate.ComboBox // popup list: a gamepad can drive it
+                Keys.onLeftPressed: decrementCurrentIndex()
+                Keys.onRightPressed: incrementCurrentIndex()
                 id: newGame
                 text: Halo.tr("Game")
                 model: installed.map(g => g.name)
                 currentIndex: 0
             }
             FormCard.FormComboBoxDelegate {
+                displayMode: FormCard.FormComboBoxDelegate.ComboBox // popup list: a gamepad can drive it
+                Keys.onLeftPressed: decrementCurrentIndex()
+                Keys.onRightPressed: incrementCurrentIndex()
                 id: newChoice
                 text: Halo.tr("When it opens")
                 model: choices.map(c => c.label)

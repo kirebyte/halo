@@ -9,6 +9,7 @@ import org.halo.gui
 Kirigami.ScrollablePage {
     id: page
     title: Halo.tr("Lights")
+    Keys.onPressed: event => applicationWindow().handleKey(event)
 
     // Which zone the color dialog is for (-1 = all four, -2 = one of the effect's colors).
     property int pickingZone: -1
@@ -37,24 +38,44 @@ Kirigami.ScrollablePage {
         Halo.setConfig("colors_" + Halo.effect, list.length ? list.join(" ") : "auto");
     }
 
+    // Opens the color picker with `initial` ("#rrggbb"): the platform's dialog on a desktop,
+    // Halo's own (sliders and swatches, usable with a gamepad) in handheld mode.
+    function pickColor(initial) {
+        if (Halo.handheld) {
+            picker.selectedColor = initial;
+            picker.open();
+        } else {
+            colorDialog.selectedColor = initial;
+            colorDialog.open();
+        }
+    }
+
+    // Applies the picked "rrggbb" to whatever `pickingZone` says.
+    function colorPicked(hex) {
+        if (page.pickingZone === -2) {
+            let list = page.effectColors.slice();
+            if (page.pickingEffectColor < list.length) list[page.pickingEffectColor] = hex; else list.push(hex);
+            page.saveEffectColors(list);
+        } else if (page.pickingZone < 0) {
+            Halo.setZones([hex]);
+        } else {
+            let zones = [];
+            for (let i = 0; i < 4; i++)
+                zones.push(i === page.pickingZone ? hex : Halo.base[i]);
+            Halo.setZones(zones);
+        }
+    }
+
     ColorDialog {
         id: colorDialog
         title: page.pickingZone < 0 ? Halo.tr("Ring color") : Halo.tr("Zone color")
-        onAccepted: {
-            const hex = selectedColor.toString().substring(1); // "#rrggbb" → "rrggbb"
-            if (page.pickingZone === -2) {
-                let list = page.effectColors.slice();
-                if (page.pickingEffectColor < list.length) list[page.pickingEffectColor] = hex; else list.push(hex);
-                page.saveEffectColors(list);
-            } else if (page.pickingZone < 0) {
-                Halo.setZones([hex]);
-            } else {
-                let zones = [];
-                for (let i = 0; i < 4; i++)
-                    zones.push(i === page.pickingZone ? hex : Halo.base[i]);
-                Halo.setZones(zones);
-            }
-        }
+        onAccepted: page.colorPicked(selectedColor.toString().substring(1)) // "#rrggbb" → "rrggbb"
+    }
+
+    ColorPicker {
+        id: picker
+        title: page.pickingZone < 0 ? Halo.tr("Ring color") : Halo.tr("Zone color")
+        onAccepted: page.colorPicked(hex)
     }
 
     ColumnLayout {
@@ -66,8 +87,7 @@ Kirigami.ScrollablePage {
             colors: Halo.frame.length === 4 ? Halo.frame : ["000000", "000000", "000000", "000000"]
             onZoneTapped: zone => {
                 page.pickingZone = zone;
-                colorDialog.selectedColor = "#" + Halo.base[zone];
-                colorDialog.open();
+                page.pickColor("#" + Halo.base[zone]);
             }
         }
 
@@ -94,13 +114,13 @@ Kirigami.ScrollablePage {
                 icon.name: "color-picker"
                 onClicked: {
                     page.pickingZone = -1;
-                    colorDialog.selectedColor = "#" + (Halo.base.length ? Halo.base[0] : "000000");
-                    colorDialog.open();
+                    page.pickColor("#" + (Halo.base.length ? Halo.base[0] : "000000"));
                 }
             }
             FormCard.FormDelegateSeparator {}
             FormCard.AbstractFormDelegate {
                 background: null
+                focusPolicy: Qt.NoFocus // the controls inside take the focus
                 contentItem: RowLayout {
                     QQC2.Label { text: Halo.tr("Hardware brightness") }
                     QQC2.Slider {
@@ -120,9 +140,23 @@ Kirigami.ScrollablePage {
             FormCard.FormComboBoxDelegate {
                 id: effectBox
                 text: Halo.tr("Effect")
+                // The popup list, not the mobile dialog: Up/Down and Space drive it from a gamepad.
+                displayMode: FormCard.FormComboBoxDelegate.ComboBox
+                // Left/Right change the effect without opening the list (also applies it).
+                Keys.onLeftPressed: decrementCurrentIndex()
+                Keys.onRightPressed: incrementCurrentIndex()
                 readonly property var ids: ["none"].concat(Halo.effects)
                 model: ids.map(e => e === "none" ? Halo.tr("none") : Halo.tr("effect." + e))
-                currentIndex: Math.max(0, ids.indexOf(Halo.effect.length ? Halo.effect : "none"))
+                // A ComboBox resets currentIndex to 0 whenever its model changes, and the list of
+                // effects arrives after the page: set the index by hand rather than binding it.
+                function sync() { currentIndex = Math.max(0, ids.indexOf(Halo.effect.length ? Halo.effect : "none")); }
+                // The reset to 0 lands after modelChanged and countChanged, once the delegates
+                // exist, so the index is set again from the event loop.
+                onModelChanged: { sync(); Qt.callLater(sync); }
+                Connections {
+                    target: Halo
+                    function onEffectChanged() { effectBox.sync(); }
+                }
                 onActivated: index => {
                     if (index === 0) Halo.stopEffect(); else Halo.startEffect(ids[index]);
                 }
@@ -130,6 +164,7 @@ Kirigami.ScrollablePage {
             FormCard.FormDelegateSeparator {}
             FormCard.AbstractFormDelegate {
                 background: null
+                focusPolicy: Qt.NoFocus // the controls inside take the focus
                 contentItem: RowLayout {
                     QQC2.Label { text: Halo.tr("Speed") }
                     Item { Layout.fillWidth: true }
@@ -156,6 +191,7 @@ Kirigami.ScrollablePage {
             FormCard.AbstractFormDelegate {
                 visible: page.maxColors > 0
                 background: null
+                focusPolicy: Qt.NoFocus // the controls inside take the focus
                 contentItem: ColumnLayout {
                     QQC2.Label {
                         text: page.effectColors.length ? Halo.tr("Custom colors (tap one to change it)") : Halo.tr("Default colors; add one to change them")
@@ -171,17 +207,17 @@ Kirigami.ScrollablePage {
                                 required property int index
                                 width: Kirigami.Units.gridUnit * 2.5
                                 height: width
+                                focusPolicy: Qt.StrongFocus
                                 background: Rectangle {
                                     radius: height / 2
                                     color: "#" + parent.modelData
-                                    border.color: Kirigami.Theme.textColor
-                                    border.width: 1
+                                    border.color: parent.visualFocus ? Kirigami.Theme.highlightColor : Kirigami.Theme.textColor
+                                    border.width: parent.visualFocus ? 3 : 1
                                 }
                                 onClicked: {
                                     page.pickingZone = -2;
                                     page.pickingEffectColor = index;
-                                    colorDialog.selectedColor = "#" + modelData;
-                                    colorDialog.open();
+                                    page.pickColor("#" + modelData);
                                 }
                             }
                         }
@@ -192,8 +228,7 @@ Kirigami.ScrollablePage {
                             onClicked: {
                                 page.pickingZone = -2;
                                 page.pickingEffectColor = page.effectColors.length;
-                                colorDialog.selectedColor = "#ffffff";
-                                colorDialog.open();
+                                page.pickColor("#ffffff");
                             }
                         }
                         QQC2.Button {

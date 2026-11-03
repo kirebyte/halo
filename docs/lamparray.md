@@ -41,6 +41,9 @@ To set a color: `06 00` (AutonomousMode off), then `04 04 01 00 00 01 00 02 00 0
 4. Back at **AutonomousMode=1**, vendor and sysfs take over again.
 5. **Hardware brightness:** the vendor command `5A BA C5 C4 <0-3>` (interface 02) turns the rings
    off at `0` whatever paints them, and `03` is full. Needs the udev rule in `packaging/udev/`.
+   Seen to be ignored at times while LampArray paints (2026-11-03), so at `0` the daemon also
+   paints every zone off, as it does with the screen off; that holds against games and effects
+   until the brightness comes back.
 6. **Hardware effects:** the vendor interface accepts the ROG Aura keyboard protocol
    `5D B3 zone mode R G B speed dir 00 R2 G2 B2` followed by `5D B4` (apply). Modes the Ally's MCU
    honours: 0 static, 1 breathe (1–2 colors), 2 cycle, 3 rainbow wave (direction 0/1), 10 pulse;

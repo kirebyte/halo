@@ -1,6 +1,8 @@
 //! The `Halo` object QML sees (singleton of the `org.halo.gui` module): the daemon's state as
 //! properties and the actions as invokables. `refresh` reads everything again; each action calls
-//! the daemon and then refreshes. `tr` gives QML the translated text for a key.
+//! the daemon and then refreshes. `tr` gives QML the translated text for a key; `sendKey` lets QML
+//! turn one key into another (see `Main.qml`); `handheld` says whether the window runs in handheld
+//! mode (fullscreen, touch-sized controls, gamepad hints).
 
 #[cxx_qt::bridge]
 pub mod qobject {
@@ -11,10 +13,23 @@ pub mod qobject {
         type QStringList = cxx_qt_lib::QStringList;
     }
 
+    unsafe extern "C++" {
+        include!("halo-gui/src/keys.h");
+        /// Posts a key press and release to the focused window (`src/keys.cpp`).
+        #[namespace = "halo"]
+        #[cxx_name = "sendKey"]
+        fn send_key(key: i32, modifiers: i32);
+        /// A non-key step of the `HALO_GUI_SCRIPT` debug script.
+        #[namespace = "halo"]
+        #[cxx_name = "debugStep"]
+        fn debug_step(step: &str);
+    }
+
     extern "RustQt" {
         #[qobject]
         #[qml_element]
         #[qml_singleton]
+        #[qproperty(bool, handheld)]
         #[qproperty(bool, connected)]
         #[qproperty(QString, error)]
         #[qproperty(QString, backend)]
@@ -37,6 +52,9 @@ pub mod qobject {
 
         #[qinvokable]
         fn tr(self: &Halo, key: &QString) -> QString;
+        #[qinvokable]
+        #[cxx_name = "sendKey"]
+        fn send_key_to_window(self: &Halo, key: i32);
         #[qinvokable]
         fn refresh(self: Pin<&mut Self>);
         #[qinvokable]
@@ -77,9 +95,13 @@ use core::pin::Pin;
 use cxx_qt::CxxQtType;
 use cxx_qt_lib::{QList, QString, QStringList};
 use halo_core::tr;
+use std::sync::atomic::{AtomicBool, Ordering};
 
-#[derive(Default)]
+/// Set by `main` before QML loads: the window runs in handheld mode.
+pub static HANDHELD: AtomicBool = AtomicBool::new(false);
+
 pub struct HaloRust {
+    handheld: bool,
     connected: bool,
     error: QString,
     backend: QString,
@@ -101,6 +123,33 @@ pub struct HaloRust {
     daemon: Option<Daemon>,
 }
 
+impl Default for HaloRust {
+    fn default() -> Self {
+        Self {
+            handheld: HANDHELD.load(Ordering::Relaxed),
+            connected: false,
+            error: QString::default(),
+            backend: QString::default(),
+            frame: QStringList::default(),
+            base: QStringList::default(),
+            brightness: 0,
+            effect: QString::default(),
+            speed: QString::default(),
+            hardware: false,
+            effects: QStringList::default(),
+            games_enabled: false,
+            games_json: QString::default(),
+            config_json: QString::default(),
+            layers: QStringList::default(),
+            current_game_json: QString::default(),
+            profiles_json: QString::default(),
+            installed_json: QString::default(),
+            prefixes_json: QString::default(),
+            daemon: None,
+        }
+    }
+}
+
 fn list(items: &[String]) -> QStringList {
     let mut l = QList::<QString>::default();
     for s in items {
@@ -117,6 +166,12 @@ impl qobject::Halo {
     /// The translated text for `key` (see `halo_core::i18n`).
     pub fn tr(&self, key: &QString) -> QString {
         QString::from(&tr!(&key.to_string()))
+    }
+
+    /// Sends `key` (a `Qt.Key_*`) to the focused window, as if typed. QML uses it to turn keys
+    /// nobody handled into the ones the controls understand (Return into Space, arrows into Tab).
+    pub fn send_key_to_window(&self, key: i32) {
+        qobject::send_key(key, 0);
     }
 
     /// Connects if needed and reads the daemon's state again.

@@ -390,6 +390,7 @@ dependencies = [
  "cxx-qt-build",
  "cxx-qt-lib",
  "halo-core",
+ "libc",
  "serde",
  "serde_json",
  "tokio",
